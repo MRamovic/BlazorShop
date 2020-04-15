@@ -1,0 +1,88 @@
+﻿@page "/dodajartikal"
+@using BlazorShop.Shared
+@inject NavigationManager NMM
+@using Microsoft.AspNetCore.SignalR.Client
+
+
+<h3>Dodaj artikal</h3>
+<EditForm Model="art" OnValidSubmit="NapraviArtikal">
+    <dev>
+        <p>Naziv</p>
+        <InputText @bind-Value="art.Naziv" />
+    </dev>
+    <dev>
+        <p>Kolicina</p>
+        <InputNumber @bind-Value="art.Kolicina" />
+    </dev>
+    <dev>
+        <p>Cena</p>
+        <InputNumber @bind-Value="art.Cena" />
+    </dev>
+    <button class="btn btn-primary" type="submit">Dodaj</button>
+</EditForm>
+
+@{
+    <ul>
+        @foreach (Artikal a in lArt)
+        {
+            <li>@a</li>
+        }
+    </ul>
+}
+
+
+<button @onclick="SaljiArtikal" class="btn btn-primary">Sacuvaj</button>
+<button @onclick="DodajArt" class="btn btn-primary">Dodaj2</button>
+
+
+
+@code {
+
+    public Artikal art = new Artikal();
+    public List<Artikal> lArt = new List<Artikal>();
+
+    public HubConnection ShopServer;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        ShopServer = new HubConnectionBuilder().WithUrl(NMM.ToAbsoluteUri("/habshop")).Build();
+
+
+        await ShopServer.StartAsync();
+    }
+
+    public void NapraviArtikal()
+    {
+
+        lArt.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
+    }
+
+
+
+
+    Task SaljiArtikal()
+    {
+
+        Console.WriteLine("Saljem artikal!");
+        return ShopServer.SendAsync("PrihvatiArtikal", lArt);
+    }
+
+
+
+
+    
+
+
+    Task DodajArt()
+{
+    List<Artikal> art2 = new List<Artikal>();
+
+    art2.Add(new Artikal("paradajz", 20, 30));
+    art2.Add(new Artikal("krompir", 10, 15));
+    art2.Add(new Artikal("kruska", 30, 50));
+    art2.Add(new Artikal("jabuka", 40, 35));
+
+    return ShopServer.SendAsync("PrihvatiArtikal");
+}
+}

@@ -1,0 +1,54 @@
+﻿@page "/shop"
+@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorShop.Shared
+@using BlazorShop.Client
+@inject NavigationManager NM
+
+
+<h1>Shop</h1>
+
+
+
+@code {
+
+
+    public List<Artikal> SviArtikli = new List<Artikal>();
+    public List<Artikal> PoruceniArtikli = new List<Artikal>();
+
+    public HubConnection ShopServer;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
+
+
+        //ShopServer.On<List<Artikal>>("MetodaPrikaz", art =>
+        //{
+        //    SviArtikli = art;
+        //    StateHasChanged();
+        //});
+
+        //ShopServer.On<List<Artikal>>("MetodaKorpa", korpa =>
+        //{
+        //    PoruceniArtikli = korpa;
+        //    StateHasChanged();
+        //});
+
+        await ShopServer.StartAsync();
+    }
+
+
+
+
+
+    Task PrikaziArtikle()
+    {
+        return ShopServer.SendAsync("SviArtikli");
+    }
+
+
+
+
+
+}

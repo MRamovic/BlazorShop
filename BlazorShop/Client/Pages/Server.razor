@@ -1,0 +1,33 @@
+﻿@page "/server"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NM
+
+<h1>Server</h1>
+
+<button class="btn btn-primary" @onclick="PoveziNaServer">Server</button>
+<p>@TekstServer</p>
+
+
+@code {
+    public string TekstServer { get; set; }
+    public HubConnection KaServeru;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        KaServeru = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/server")).Build();
+        KaServeru.On<string>("ServerMetoda", tekst =>
+        {
+            TekstServer = tekst;
+            StateHasChanged();
+        });
+
+        await KaServeru.StartAsync();
+    }
+
+    Task PoveziNaServer()
+    {
+        return KaServeru.SendAsync("JaviServeru");
+    }
+}
