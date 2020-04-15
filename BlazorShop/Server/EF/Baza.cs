@@ -10,10 +10,12 @@ namespace BlazorShop.Server.EF
     public class Baza : DbContext
     {
         public DbSet<Artikal>  Artikals { get; set; }
+        public DbSet<KorpaArtikal> KorpaArtikals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Artikal>().HasKey(i => i.ID);
+            modelBuilder.Entity<KorpaArtikal>().HasKey(i => i.ID);
         }
 
         protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)

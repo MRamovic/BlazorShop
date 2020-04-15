@@ -13,21 +13,50 @@
     <ul>
         @foreach (Artikal art in lArt)
         {
-            <li>@art</li>
+            <li><button class="btn btn-primary" @onclick="(()=>DodajUKorpu(art))">+</button> @art</li>
         }
     </ul>
 </div>
 
+<h2>Izabrali ste:</h2>
+
+<div>
+    <ul>
+        @foreach (Artikal art in IzabraniArtikal)
+        {
+        <li>@art</li>
+        }
+    </ul>
+</div>
+
+<h2>Korpa @Korpa2.Count</h2>
+<div>
+    <ul>
+        @foreach (Artikal b in Korpa2 )
+        {
+            <li>@b</li>
+        }
+    </ul>
+</div>
+
+
+<button @onclick="PosaljiUKorpu" class="btn btn-primary">Dodaj u korpu!</button>
+
 @code {
 
     public HubConnection ShopServer;
-    List<Artikal> lArt = new List<Artikal>();
+    public HubConnection KorpaServer;
+    public List<Artikal> lArt = new List<Artikal>();
+    public List<Artikal> IzabraniArtikal = new List<Artikal>();
+    public List<Artikal> Korpa2 = new List<Artikal>();
+    public decimal UkupnaCena { get; set; } = 0;
     Artikal art = new Artikal();
 
     protected override async Task OnInitializedAsync()
     {
 
-        ShopServer= new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habdodajartikal")).Build();
+        ShopServer= new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
+        KorpaServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habkorpa")).Build();
 
         ShopServer.On<List<Artikal>>("ArtikalMetoda", lart =>
 
@@ -38,13 +67,36 @@
 
         await ShopServer.StartAsync();
 
+
+        ShopServer.On<List<Artikal>>("KorpaMetoda", kArt =>
+
+        {
+            Korpa2 = kArt;
+            StateHasChanged();
+        });
+
+        await ShopServer.StartAsync();
+
     }
 
-    Task  PrikaziArtikle()
+    public void  PrikaziArtikle()
     {
-       return ShopServer.SendAsync("SviArtikli");
+        ShopServer.SendAsync("SviArtikli");
+    }
+    public void DodajUKorpu(Artikal a)
+    {
+        IzabraniArtikal.Add(a);
+        //ShopServer.SendAsync("Korpa", a);
+
     }
 
+    public void PosaljiUKorpu()
+    {
+        ShopServer.SendAsync("Korpa", IzabraniArtikal);
+
+
+        IzabraniArtikal = new List<Artikal>();
+    }
 
 
 }
