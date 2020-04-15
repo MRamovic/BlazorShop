@@ -9,14 +9,17 @@
 
 <EditForm Model="art" OnValidSubmit="NapraviArtikal">
     <dev>
+        <p/>
         <p>Naziv</p>
         <InputText @bind-Value="art.Naziv" />
     </dev>
     <dev>
+        <p />
         <p>Kolicina</p>
         <InputNumber @bind-Value="art.Kolicina" />
     </dev>
     <dev>
+        <p />
         <p>Cena</p>
         <InputNumber @bind-Value="art.Cena" />
     </dev>
@@ -35,9 +38,9 @@
 }
 
 
-@*<button @onclick="SaljiArtikal" class="btn btn-primary">Sacuvaj</button>*@
+<button @onclick="SaljiArtikal" class="btn btn-primary">Sacuvaj</button>
 
-<button @onclick="DodajArt" class="btn btn-primary">Dodaj2</button>
+<button @onclick="DodajArt" class="btn btn-primary">Dodaj rucno art</button>
 
 
 
@@ -67,25 +70,19 @@
     }
 
 
-    Task NapraviArtikal()
+    public void NapraviArtikal()
     {
 
         lArt.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
-        return DodajArtikalServer.SendAsync("PrihvatiArtikal", lArt);
+        art = new Artikal();
 
     }
+    public void SaljiArtikal()
+    {
+        DodajArtikalServer.SendAsync("PrihvatiArtikal", lArt);
+    }
 
-    //Task DodajArt()
-    //{
-    //    List<Artikal> art2 = new List<Artikal>();
-    //    art2.Add(new Artikal("koka kola", 20, 30));
-    //    art2.Add(new Artikal("fanta", 10, 15));
-    //    art2.Add(new Artikal("sprite", 30, 50));
-    //    art2.Add(new Artikal("bitter lemon", 40, 35));
-
-    //    return DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
-    //}
-
+  
     public void DodajArt()
     {
         List<Artikal> art2 = new List<Artikal>();

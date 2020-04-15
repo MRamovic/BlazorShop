@@ -7,47 +7,43 @@
 
 <h1>Shop</h1>
 
+<button class="btn btn-primary" @onclick="PrikaziArtikle">Artikli</button>
 
+<div>
+    <ul>
+        @foreach (Artikal art in lArt)
+        {
+            <li>@art</li>
+        }
+    </ul>
+</div>
 
 @code {
 
+    public HubConnection ShopServer;
+    List<Artikal> lArt = new List<Artikal>();
+    Artikal art = new Artikal();
 
-    //public List<Artikal> SviArtikli = new List<Artikal>();
-    //public List<Artikal> PoruceniArtikli = new List<Artikal>();
+    protected override async Task OnInitializedAsync()
+    {
 
-    //public HubConnection ShopServer;
+        ShopServer= new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habdodajartikal")).Build();
 
+        ShopServer.On<List<Artikal>>("ArtikalMetoda", lart =>
 
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
+        {
+            lArt = lart;
+            StateHasChanged();
+        });
 
+        await ShopServer.StartAsync();
 
-    //    //ShopServer.On<List<Artikal>>("MetodaPrikaz", art =>
-    //    //{
-    //    //    SviArtikli = art;
-    //    //    StateHasChanged();
-    //    //});
+    }
 
-    //    //ShopServer.On<List<Artikal>>("MetodaKorpa", korpa =>
-    //    //{
-    //    //    PoruceniArtikli = korpa;
-    //    //    StateHasChanged();
-    //    //});
-
-    //    await ShopServer.StartAsync();
-    //}
-
-
-
-
-
-    //Task PrikaziArtikle()
-    //{
-    //    return ShopServer.SendAsync("SviArtikli");
-    //}
-
-
+    Task  PrikaziArtikle()
+    {
+       return ShopServer.SendAsync("SviArtikli");
+    }
 
 
 
