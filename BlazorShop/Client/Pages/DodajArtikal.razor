@@ -1,6 +1,6 @@
 ﻿@page "/dodajartikal"
 @using BlazorShop.Shared
-@inject NavigationManager NMM
+@inject NavigationManager NM
 @using Microsoft.AspNetCore.SignalR.Client
 
 
@@ -41,21 +41,34 @@
     public Artikal art = new Artikal();
     public List<Artikal> lArt = new List<Artikal>();
 
-    public HubConnection ShopServer;
+    public HubConnection  DodajArtikalServer;
+
 
     protected override async Task OnInitializedAsync()
     {
 
-        ShopServer = new HubConnectionBuilder().WithUrl(NMM.ToAbsoluteUri("/habshop")).Build();
+        DodajArtikalServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habdodajartikal")).Build();
 
+        DodajArtikalServer.On<List<Artikal>>("ArtikalMetoda", lart =>
 
-        await ShopServer.StartAsync();
+        {
+            lArt = lart;
+            StateHasChanged();
+        });
+
+        await DodajArtikalServer.StartAsync();
     }
 
-    public void NapraviArtikal()
+
+
+
+    Task NapraviArtikal()
     {
 
-        lArt.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
+        lArt.Add(art);
+        return DodajArtikalServer.SendAsync("PrihvatiArtikal", lArt);
+
+        //lArt.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
     }
 
 
@@ -65,24 +78,19 @@
     {
 
         Console.WriteLine("Saljem artikal!");
-        return ShopServer.SendAsync("PrihvatiArtikal", lArt);
+        return DodajArtikalServer.SendAsync("PrihvatiArtikal", lArt);
     }
 
 
-
-
-    
-
-
     Task DodajArt()
-{
-    List<Artikal> art2 = new List<Artikal>();
+    {
+        List<Artikal> art2 = new List<Artikal>();
 
-    art2.Add(new Artikal("paradajz", 20, 30));
-    art2.Add(new Artikal("krompir", 10, 15));
-    art2.Add(new Artikal("kruska", 30, 50));
-    art2.Add(new Artikal("jabuka", 40, 35));
+        art2.Add(new Artikal("paradajz", 20, 30));
+        art2.Add(new Artikal("krompir", 10, 15));
+        art2.Add(new Artikal("kruska", 30, 50));
+        art2.Add(new Artikal("jabuka", 40, 35));
 
-    return ShopServer.SendAsync("PrihvatiArtikal");
-}
+        return DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
+    }
 }

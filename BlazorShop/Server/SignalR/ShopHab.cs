@@ -11,17 +11,7 @@ namespace BlazorShop.Server.SignalR
     public class ShopHab : Hub
     {
 
-        public async Task PrihvatiArtikal(List<Artikal> a)
-        {
-            Baza NB = new Baza();
-
-            foreach (Artikal art in a)
-            {
-                NB.Artikli.Add(art);
-            }
-            Console.WriteLine("U serveru sam!");
-            await NB.SaveChangesAsync();
-        }
+       
 
 
 

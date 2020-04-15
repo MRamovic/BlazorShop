@@ -56,6 +56,7 @@ namespace BlazorShop.Server
                 endpoints.MapControllers();
                 endpoints.MapHub<hab>("server");
                 endpoints.MapHub<ShopHab>("habshop");
+                endpoints.MapHub<DodajArtikalHab>("habdodajartikal");
                 endpoints.MapFallbackToFile("index.html");
             });
         }
