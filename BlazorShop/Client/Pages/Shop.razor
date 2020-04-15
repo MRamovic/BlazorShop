@@ -12,40 +12,40 @@
 @code {
 
 
-    public List<Artikal> SviArtikli = new List<Artikal>();
-    public List<Artikal> PoruceniArtikli = new List<Artikal>();
+    //public List<Artikal> SviArtikli = new List<Artikal>();
+    //public List<Artikal> PoruceniArtikli = new List<Artikal>();
 
-    public HubConnection ShopServer;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
+    //public HubConnection ShopServer;
 
 
-        //ShopServer.On<List<Artikal>>("MetodaPrikaz", art =>
-        //{
-        //    SviArtikli = art;
-        //    StateHasChanged();
-        //});
-
-        //ShopServer.On<List<Artikal>>("MetodaKorpa", korpa =>
-        //{
-        //    PoruceniArtikli = korpa;
-        //    StateHasChanged();
-        //});
-
-        await ShopServer.StartAsync();
-    }
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
 
 
+    //    //ShopServer.On<List<Artikal>>("MetodaPrikaz", art =>
+    //    //{
+    //    //    SviArtikli = art;
+    //    //    StateHasChanged();
+    //    //});
+
+    //    //ShopServer.On<List<Artikal>>("MetodaKorpa", korpa =>
+    //    //{
+    //    //    PoruceniArtikli = korpa;
+    //    //    StateHasChanged();
+    //    //});
+
+    //    await ShopServer.StartAsync();
+    //}
 
 
 
-    Task PrikaziArtikle()
-    {
-        return ShopServer.SendAsync("SviArtikli");
-    }
+
+
+    //Task PrikaziArtikle()
+    //{
+    //    return ShopServer.SendAsync("SviArtikli");
+    //}
 
 
 

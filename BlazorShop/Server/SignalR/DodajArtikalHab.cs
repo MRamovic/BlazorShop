@@ -11,26 +11,21 @@ namespace BlazorShop.Server.SignalR
 {
     public class DodajArtikalHab:Hub
     {
-        public async Task SviArtikli()
-        {
-            
-            Baza DB = new Baza();
-            var sviArt = DB.Artikli.ToList();
-            
-            await Clients.Caller.SendAsync("ArtikalMetoda", sviArt);
-        }
 
-
+        
         public async Task PrihvatiArtikal(List<Artikal> a)
         {
-            Baza DB = new Baza();
+            Console.WriteLine("U metodi PrihvatiArtikal sam!");
+            Baza NB = new Baza();
 
             foreach (Artikal art in a)
             {
-                DB.Artikli.Add(art);
+                Console.WriteLine($"{art.Naziv}");
+                NB.Artikals.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
             }
-            Console.WriteLine("U serveru sam!");
-            await DB.SaveChangesAsync();
+            
+            await NB.SaveChangesAsync();  
+
         }
     }
 }

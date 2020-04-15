@@ -5,6 +5,8 @@
 
 
 <h3>Dodaj artikal</h3>
+
+
 <EditForm Model="art" OnValidSubmit="NapraviArtikal">
     <dev>
         <p>Naziv</p>
@@ -21,6 +23,8 @@
     <button class="btn btn-primary" type="submit">Dodaj</button>
 </EditForm>
 
+<p>Trenutno u listi: @lArt.Count</p>
+
 @{
     <ul>
         @foreach (Artikal a in lArt)
@@ -31,7 +35,8 @@
 }
 
 
-<button @onclick="SaljiArtikal" class="btn btn-primary">Sacuvaj</button>
+@*<button @onclick="SaljiArtikal" class="btn btn-primary">Sacuvaj</button>*@
+
 <button @onclick="DodajArt" class="btn btn-primary">Dodaj2</button>
 
 
@@ -49,6 +54,7 @@
 
         DodajArtikalServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habdodajartikal")).Build();
 
+
         DodajArtikalServer.On<List<Artikal>>("ArtikalMetoda", lart =>
 
         {
@@ -57,40 +63,36 @@
         });
 
         await DodajArtikalServer.StartAsync();
+
     }
-
-
 
 
     Task NapraviArtikal()
     {
 
-        lArt.Add(art);
+        lArt.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
         return DodajArtikalServer.SendAsync("PrihvatiArtikal", lArt);
 
-        //lArt.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
     }
 
+    //Task DodajArt()
+    //{
+    //    List<Artikal> art2 = new List<Artikal>();
+    //    art2.Add(new Artikal("koka kola", 20, 30));
+    //    art2.Add(new Artikal("fanta", 10, 15));
+    //    art2.Add(new Artikal("sprite", 30, 50));
+    //    art2.Add(new Artikal("bitter lemon", 40, 35));
 
+    //    return DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
+    //}
 
-
-    Task SaljiArtikal()
-    {
-
-        Console.WriteLine("Saljem artikal!");
-        return DodajArtikalServer.SendAsync("PrihvatiArtikal", lArt);
-    }
-
-
-    Task DodajArt()
+    public void DodajArt()
     {
         List<Artikal> art2 = new List<Artikal>();
-
-        art2.Add(new Artikal("paradajz", 20, 30));
-        art2.Add(new Artikal("krompir", 10, 15));
-        art2.Add(new Artikal("kruska", 30, 50));
-        art2.Add(new Artikal("jabuka", 40, 35));
-
-        return DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
+        art2.Add(new Artikal("koka kola", 20, 30));
+        art2.Add(new Artikal("fanta", 10, 15));
+        art2.Add(new Artikal("sprite", 30, 50));
+        art2.Add(new Artikal("bitter lemon", 40, 35));
+        DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
     }
 }

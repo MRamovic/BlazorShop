@@ -15,7 +15,7 @@ namespace BlazorShop.Server
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            using (var sql = new Baza())
+            using (var sql = new EF.Baza())
             {
                 //sql.Database.EnsureDeleted();
                 sql.Database.EnsureCreated();
