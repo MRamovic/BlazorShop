@@ -15,6 +15,7 @@ namespace BlazorShop.Server.SignalR
             Console.WriteLine("U Metodi SviArtikli Hab!");
             Baza NB = new Baza();
             List<Artikal> lArt2 = new List<Artikal>();
+
             lArt2 = NB.Artikals.ToList();
             Console.WriteLine("Prosla metoda svi artikli Hab!");
             await Clients.Caller.SendAsync("ArtikalMetoda", lArt2);              
