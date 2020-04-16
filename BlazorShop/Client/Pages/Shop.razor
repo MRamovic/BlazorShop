@@ -9,27 +9,80 @@
 <h1>Shop</h1>
 
 <button class="btn btn-primary" @onclick="PrikaziArtikle">Artikli</button>
-
-<div>
-    <ul>
-        @foreach (Artikal art in lArt)
-        {
-            <li><button class="btn btn-primary" @onclick="(()=>DodajUKorpu(art))">+</button> @art</li>
+<html>
+<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
         }
-    </ul>
-</div>
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <table style="width:100%">
+        <tr>
+            <th width="*"></th>
+            <th width="*">Sifra art.</th>
+            <th width="*">Naziv</th>
+            <th width="*">Cena</th>
+            <th width="*">Kolicina</th>
+        </tr>
+        @foreach (Artikal a in lArt)
+        {
+            <tr>
+                <td width="*"><button @onclick="(()=>DodajUKorpu(a))" class="btn btn-primary">Dodaj</button></td>
+                <td width="*">@a.ID</td>
+                <td width="*">@a.Naziv</td>
+                <td width="*">@a.Cena</td>
+                <td width="*">@a.Kolicina</td>
+            </tr>
+        }
+    </table>
+</body>
+</html>
 
 
 <h2>Izabrali ste:</h2>
 
-<div>
-    <ul>
-        @foreach (Artikal art in IzabraniArtikal)
-        {
-        <li>@art</li>
+<html>
+<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
         }
-    </ul>
-</div>
+
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <table style="width:100%">
+        <tr>
+            <th width="*">Sifra art.</th>
+            <th width="*">Naziv</th>
+            <th width="*">Cena</th>
+            <th width="*">Kolicina</th>
+        </tr>
+        @foreach (Artikal a in IzabraniArtikal)
+        {
+            <tr>
+                <td width="*">@a.ID</td>
+                <td width="*">@a.Naziv</td>
+                <td width="*">@a.Cena</td>
+                <td width="*">@a.Kolicina</td>
+            </tr>
+        }
+    </table>
+</body>
+</html>
+
 
 
 @code {
@@ -67,8 +120,34 @@
     public void DodajUKorpu(Artikal a)
     {
         IzabraniArtikal.Add(a);
+        //Console.WriteLine("U metodi Dodaj korpu sam");
+        //Artikal art = new Artikal(a.Naziv, 1, a.Cena);
 
-       LS.SetItem("CuvajKorpu", IzabraniArtikal);
+        //if (IzabraniArtikal.Count == 0)
+        //{
+        //    Console.WriteLine("U ifu sam");
+        //    IzabraniArtikal.Add(art);
+
+        //}
+        //else
+        //{
+
+        //    for (int i = 0; i < IzabraniArtikal.Count; i++)
+        //    {
+        //        if (IzabraniArtikal[i].SKU == art.SKU)
+        //        {
+        //            Console.WriteLine("U drugom ifu sam");
+        //            IzabraniArtikal[i].Kolicina += 1;
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine("Nisam nasao artikal");
+        //            IzabraniArtikal.Add(art);
+        //        }
+        //    }
+        //}
+
+        LS.SetItem("CuvajKorpu", IzabraniArtikal);
 
     }
 

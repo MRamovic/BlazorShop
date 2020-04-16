@@ -6,16 +6,44 @@
 
 <h1>Korpa</h1>
 <h2>Vas racun</h2>
- 
-<div>
-    <ul>
+
+<html>
+<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <table style="width:100%">
+        <tr>
+            <th width="*"></th>
+            <th  width="*">Sifra art.</th>
+            <th width="*">Naziv</th>
+            <th width="*">Cena</th>
+            <th width="*">Kolicina</th>
+        </tr>
         @foreach (Artikal a in PoruceniArtikli)
         {
-            
-            <li><button @onclick="(()=>UkloniIzKorpe(a))" class="btn btn-primary">-</button> @a</li>
+            <tr>
+                <td width="*"><button @onclick="(()=>UkloniIzKorpe(a))" class="btn btn-primary">Ukloni</button></td>
+                <td width="*">@a.ID</td>
+                <td width="*">@a.Naziv</td>
+                <td width="*">@a.Cena</td>
+                <td width="*">@a.Kolicina</td>
+            </tr>
         }
-    </ul>
-</div>
+    </table>
+</body>
+</html>
+
+
 
 <button class="btn btn-primary" @onclick="ZavrsiRacun">Zavrsi racun</button>
 
@@ -24,7 +52,7 @@
 @code {
 
     public HubConnection KorpaServer;
-    
+
     public Artikal art2 = new Artikal();
     public List<Artikal> PoruceniArtikli = new List<Artikal>();
     public List<Artikal> KupljeniArtikli = new List<Artikal>();
@@ -40,14 +68,14 @@
         KorpaServer.On<List<Artikal>>("KorpaMetoda", kArt =>
 
         {
-            PoruceniArtikli= kArt;
+            PoruceniArtikli = kArt;
             StateHasChanged();
         });
 
 
         await KorpaServer.StartAsync();
 
-        if (LS.ContainKey ("CuvajKorpu"))
+        if (LS.ContainKey("CuvajKorpu"))
         {
             PoruceniArtikli = LS.GetItem<List<Artikal>>("CuvajKorpu");
         }

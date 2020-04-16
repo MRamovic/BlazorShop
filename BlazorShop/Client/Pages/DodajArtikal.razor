@@ -86,10 +86,10 @@
     public void DodajArt()
     {
         List<Artikal> art2 = new List<Artikal>();
-        art2.Add(new Artikal("koka kola", 20, 30));
-        art2.Add(new Artikal("fanta", 10, 15));
-        art2.Add(new Artikal("sprite", 30, 50));
-        art2.Add(new Artikal("bitter lemon", 40, 35));
+        art2.Add(new Artikal("123","koka kola", 20, 30));
+        art2.Add(new Artikal("112","fanta", 10, 15));
+        art2.Add(new Artikal("115","sprite", 30, 50));
+        art2.Add(new Artikal("119","bitter lemon", 40, 35));
         DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
     }
 }

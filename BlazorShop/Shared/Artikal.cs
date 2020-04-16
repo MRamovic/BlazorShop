@@ -7,6 +7,7 @@ namespace BlazorShop.Shared
     public class Artikal
     {
         public int ID { get; set; }
+        public string SKU { get; set; }
         public string Naziv { get; set; }
         public int Kolicina { get; set; }
         public int Cena { get; set; }
@@ -16,6 +17,13 @@ namespace BlazorShop.Shared
         public Artikal() { }
         public Artikal (string n, int k, int c)
         {
+            Naziv = n;
+            Kolicina = k;
+            Cena = c;
+        }
+        public Artikal(string s,string n, int k, int c)
+        {
+            SKU = s;
             Naziv = n;
             Kolicina = k;
             Cena = c;

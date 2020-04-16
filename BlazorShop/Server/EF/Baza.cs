@@ -16,7 +16,8 @@ namespace BlazorShop.Server.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Artikal>().HasKey(i => i.ID);
-
+            
+           
             modelBuilder.Entity<ArtikalRacuni>().HasKey(ar => new { ar.IDA, ar.IDR });
             modelBuilder.Entity<ArtikalRacuni>().HasOne(ar => ar.art).WithMany(k => k.Racunii).HasForeignKey(ar=>ar.IDA);
             modelBuilder.Entity<ArtikalRacuni>().HasOne(ar => ar.rac).WithMany(k => k.PoruceniArtikli).HasForeignKey(ar => ar.IDR);
