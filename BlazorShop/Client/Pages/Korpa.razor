@@ -2,37 +2,29 @@
 @using BlazorShop.Shared
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager NM
+@inject Blazored.LocalStorage.ISyncLocalStorageService LS
 
 <h1>Korpa</h1>
-
- <button class="btn btn-primary" @onclick="PrikaziKorpu">Prikazi korpu</button>
+<h2>Vas racun</h2>
+ 
 <div>
     <ul>
         @foreach (Artikal a in PoruceniArtikli)
         {
             
-            <li><button class="btn btn-primary">-</button> @a</li>
+            <li><button @onclick="(()=>UkloniIzKorpe(a))" class="btn btn-primary">-</button> @a</li>
         }
     </ul>
 </div>
+
 <button class="btn btn-primary" @onclick="ZavrsiRacun">Zavrsi racun</button>
-<h2>Vas racun:</h2>
-<div>
-    <ul>
-        @foreach (Artikal art in KupljeniArtikli)
-        {
-            <li>@art.Naziv  -  @art.Cena   -   @art.Kolicina  </li>
-            UkupnaCena += art.Cena;
-        }
-    </ul>
-    <p>Ukupno: @UkupnaCena </p>
-   
-</div>
+
+
 
 @code {
 
     public HubConnection KorpaServer;
-    public HubConnection ShopServer;
+    
     public Artikal art2 = new Artikal();
     public List<Artikal> PoruceniArtikli = new List<Artikal>();
     public List<Artikal> KupljeniArtikli = new List<Artikal>();
@@ -42,19 +34,7 @@
     protected override async Task OnInitializedAsync()
     {
 
-        ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
         KorpaServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habkorpa")).Build();
-
-        KorpaServer.On<List<Artikal>>("RacunMetoda", kArt =>
-
-        {
-            KupljeniArtikli = kArt;
-            StateHasChanged();
-        });
-
-
-        await KorpaServer.StartAsync();
-
 
 
         KorpaServer.On<List<Artikal>>("KorpaMetoda", kArt =>
@@ -67,17 +47,21 @@
 
         await KorpaServer.StartAsync();
 
-
+        if (LS.ContainKey ("CuvajKorpu"))
+        {
+            PoruceniArtikli = LS.GetItem<List<Artikal>>("CuvajKorpu");
+        }
     }
 
-    public void PrikaziKorpu()
+    async Task ZavrsiRacun()
     {
-
-        KorpaServer.SendAsync("Korpa2");
+        await KorpaServer.SendAsync("KorpaRacun", PoruceniArtikli);
+        PoruceniArtikli.Clear();
     }
 
-    public void ZavrsiRacun()
+    public void UkloniIzKorpe(Artikal a)
     {
-        KorpaServer.SendAsync("KorpaRacun");
+        PoruceniArtikli.Remove(a);
+        LS.SetItem("CuvajKorpu", PoruceniArtikli);
     }
 }

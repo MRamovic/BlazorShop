@@ -10,20 +10,27 @@ namespace BlazorShop.Server.SignalR
 {
     public class KorpaHab : Hub
     {
-        public async Task Korpa2()
+
+        public async Task KorpaRacun(List<Artikal> la)
         {
             Baza NB = new Baza();
-            var art = NB.KorpaArtikals.ToList();
-            await Clients.Caller.SendAsync("KorpaMetoda", art);   
-        }
 
-        public async Task KorpaRacun()
-        {
-            Baza NB = new Baza();
-            var art = NB.KorpaArtikals.ToList();
-            await Clients.Caller.SendAsync("RacunMetoda", art);
-            NB.KorpaArtikals.RemoveRange();
+            var rac=new Racuni();
+            var lisart = new List<Artikal>();
 
+            foreach(Artikal a in la)
+            {
+                lisart.Add(NB.Artikals.Find(a.ID));
+            }
+
+
+            NB.Racunis.Add(rac);
+
+            foreach (Artikal a in lisart)
+            {
+                NB.ArtikalRacunis.Add(new ArtikalRacuni(a, rac));
+            }
+            NB.SaveChanges();
         }
     }
 }

@@ -10,12 +10,17 @@ namespace BlazorShop.Server.EF
     public class Baza : DbContext
     {
         public DbSet<Artikal>  Artikals { get; set; }
-        public DbSet<KorpaArtikal> KorpaArtikals { get; set; }
+        public DbSet<ArtikalRacuni> ArtikalRacunis { get; set; }
+        public DbSet<Racuni> Racunis { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Artikal>().HasKey(i => i.ID);
-            modelBuilder.Entity<KorpaArtikal>().HasKey(i => i.ID);
+
+            modelBuilder.Entity<ArtikalRacuni>().HasKey(ar => new { ar.IDA, ar.IDR });
+            modelBuilder.Entity<ArtikalRacuni>().HasOne(ar => ar.art).WithMany(k => k.Racunii).HasForeignKey(ar=>ar.IDA);
+            modelBuilder.Entity<ArtikalRacuni>().HasOne(ar => ar.rac).WithMany(k => k.PoruceniArtikli).HasForeignKey(ar => ar.IDR);
+
         }
 
         protected override void OnConfiguring (DbContextOptionsBuilder optionsBuilder)

@@ -11,6 +11,8 @@ namespace BlazorShop.Shared
         public int Kolicina { get; set; }
         public int Cena { get; set; }
 
+        public ICollection<ArtikalRacuni> Racunii { get;  set; }
+
         public Artikal() { }
         public Artikal (string n, int k, int c)
         {
