@@ -7,41 +7,38 @@
 <h1>Korpa</h1>
 <h2>Vas racun</h2>
 
-<html>
-<head>
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 5px;
-            text-align: left;
-        }
-    </style>
-</head>
-<body>
-    <table style="width:100%">
+
+    <table style="text-align:center" class="table">
         <tr>
-            <th width="*"></th>
-            <th  width="*">Sifra art.</th>
-            <th width="*">Naziv</th>
-            <th width="*">Cena</th>
-            <th width="*">Kolicina</th>
+            <th></th>
+            <th>Sifra art.</th>
+            <th>Naziv</th>
+            <th>Cena</th>
+            <th>Kolicina</th>
+            <th> Ukupno</th>
         </tr>
         @foreach (Artikal a in PoruceniArtikli)
         {
             <tr>
-                <td width="*"><button @onclick="(()=>UkloniIzKorpe(a))" class="btn btn-primary">Ukloni</button></td>
-                <td width="*">@a.ID</td>
-                <td width="*">@a.Naziv</td>
-                <td width="*">@a.Cena</td>
-                <td width="*">@a.Kolicina</td>
+                <td><button @onclick="(() => UkloniIzKorpe(a))" class="btn btn-primary">Ukloni</button></td>
+
+                <td>@a.ID</td>
+                <td>@a.Naziv</td>
+                <td>@a.Cena</td>
+                <td>@a.Kolicina</td>
+                <td>@(a.Cena * a.Kolicina)</td>
+                @{ Svega += a.Cena * a.Kolicina;}
+                
             </tr>
-        }
+
+                    }
+        <tr>
+            <td colspan="4" style="border-left: hidden; border-bottom:hidden"></td>
+            <td style="border:2px solid black; font-style:italic, oblique; background-color:darkgray" >Svega:</td>
+            <td >@Svega</td>
+        </tr>
     </table>
-</body>
-</html>
+
 
 
 
@@ -57,6 +54,7 @@
     public List<Artikal> PoruceniArtikli = new List<Artikal>();
     public List<Artikal> KupljeniArtikli = new List<Artikal>();
     public decimal UkupnaCena = 0;
+    public decimal Svega = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -64,13 +62,6 @@
 
         KorpaServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habkorpa")).Build();
 
-
-        KorpaServer.On<List<Artikal>>("KorpaMetoda", kArt =>
-
-        {
-            PoruceniArtikli = kArt;
-            StateHasChanged();
-        });
 
 
         await KorpaServer.StartAsync();
@@ -84,12 +75,14 @@
     async Task ZavrsiRacun()
     {
         await KorpaServer.SendAsync("KorpaRacun", PoruceniArtikli);
+        await KorpaServer.SendAsync("BrisanjeIzBaze", PoruceniArtikli);
         PoruceniArtikli.Clear();
+        LS.RemoveItem("CuvajKorpu");
     }
 
     public void UkloniIzKorpe(Artikal a)
     {
-        PoruceniArtikli.Remove(a);
+        PoruceniArtikli.Remove(a);  
         LS.SetItem("CuvajKorpu", PoruceniArtikli);
     }
 }

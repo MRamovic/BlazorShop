@@ -18,7 +18,8 @@ namespace BlazorShop.Server.SignalR
 
             lArt2 = NB.Artikals.ToList();
             Console.WriteLine("Prosla metoda svi artikli Hab!");
-            await Clients.Caller.SendAsync("ArtikalMetoda", lArt2);              
+            await Clients.Caller.SendAsync("ArtikalMetoda", lArt2);
+            Console.WriteLine("Prosao await");
         }
 
       

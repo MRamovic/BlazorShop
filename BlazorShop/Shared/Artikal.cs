@@ -28,6 +28,14 @@ namespace BlazorShop.Shared
             Kolicina = k;
             Cena = c;
         }
+        public Artikal(int i,  string n, int k, int c)
+        {
+            ID = i;
+            
+            Naziv = n;
+            Kolicina = k;
+            Cena = c;
+        }
         public override string ToString()
         {
             return $"   { Naziv} ----  {Kolicina} - {Cena}  ";

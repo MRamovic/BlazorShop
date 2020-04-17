@@ -7,151 +7,120 @@
 
 
 <h1>Shop</h1>
+<div style="float:left; width:50%; position:page "><h2>Artikli</h2></div>
+<div style="float:left; width:50%; position:page"><h2>Izabrali ste:</h2></div>
 
-<button class="btn btn-primary" @onclick="PrikaziArtikle">Artikli</button>
-<html>
-<head>
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 5px;
-            text-align: left;
-        }
-    </style>
-</head>
-<body>
-    <table style="width:100%">
+<div style="width : 50%; max-height:570px;  position:page; float:left;overflow:scroll; overflow-x:hidden;  padding-right:5px">
+    
+    <table class="table" style="text-align:center; ">
         <tr>
-            <th width="*"></th>
-            <th width="*">Sifra art.</th>
-            <th width="*">Naziv</th>
-            <th width="*">Cena</th>
-            <th width="*">Kolicina</th>
+            <th></th>
+            <th>Sifra art.</th>
+            <th>Naziv</th>
+            <th>Cena</th>
+            <th>Kolicina</th>
         </tr>
         @foreach (Artikal a in lArt)
         {
-            <tr>
-                <td width="*"><button @onclick="(()=>DodajUKorpu(a))" class="btn btn-primary">Dodaj</button></td>
-                <td width="*">@a.ID</td>
-                <td width="*">@a.Naziv</td>
-                <td width="*">@a.Cena</td>
-                <td width="*">@a.Kolicina</td>
-            </tr>
+        <tr>
+            <td><button @onclick="(()=>DodajUKorpu(a))" class="btn btn-primary">Dodaj</button></td>
+            <td>@a.ID</td>
+            <td>@a.Naziv</td>
+            <td>@a.Cena</td>
+            <td>@a.Kolicina</td>
+        </tr>
         }
     </table>
-</body>
-</html>
+</div>
+<div style=" width: 50%; max-height: 570px; position: page; float: left;overflow:scroll; overflow-x:hidden; border-left: 2px double red; padding-left: 5px ">
+    
 
 
-<h2>Izabrali ste:</h2>
-
-<html>
-<head>
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 5px;
-            text-align: left;
-        }
-    </style>
-</head>
-<body>
-    <table style="width:100%">
+    <table class="table" style="text-align:center; ">
         <tr>
-            <th width="*">Sifra art.</th>
-            <th width="*">Naziv</th>
-            <th width="*">Cena</th>
-            <th width="*">Kolicina</th>
+            <th>Sifra art.</th>
+            <th>Naziv</th>
+            <th>Cena</th>
+            <th>Kolicina</th>
         </tr>
         @foreach (Artikal a in IzabraniArtikal)
         {
             <tr>
-                <td width="*">@a.ID</td>
-                <td width="*">@a.Naziv</td>
-                <td width="*">@a.Cena</td>
-                <td width="*">@a.Kolicina</td>
+                <td>@a.ID</td>
+                <td>@a.Naziv</td>
+                <td>@a.Cena</td>
+                <td>@a.Kolicina</td>
             </tr>
         }
     </table>
-</body>
-</html>
+</div>
 
 
 
-@code {
+    @code {
 
-    public HubConnection ShopServer;
-    public List<Artikal> lArt = new List<Artikal>();
-    public List<Artikal> IzabraniArtikal = new List<Artikal>();
+        public HubConnection ShopServer;
+        public List<Artikal> lArt = new List<Artikal>();
+        public List<Artikal> IzabraniArtikal = new List<Artikal>();
 
-    public decimal UkupnaCena { get; set; } = 0;
-    Artikal art = new Artikal();
+        public decimal UkupnaCena { get; set; } = 0;
+        Artikal art = new Artikal();
 
-    protected override async Task OnInitializedAsync()
-    {
-
-        ShopServer= new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
-
-
-        ShopServer.On<List<Artikal>>("ArtikalMetoda", lart =>
-
+        protected override async Task OnInitializedAsync()
         {
-            lArt = lart;
-            StateHasChanged();
-        });
 
-        await ShopServer.StartAsync();
+            ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
+
+
+            ShopServer.On<List<Artikal>>("ArtikalMetoda", lart =>
+
+            {
+                lArt = lart;
+                StateHasChanged();
+            });
+
+            await ShopServer.StartAsync();
+            if (LS.ContainKey("CuvajKorpu"))
+            {
+                IzabraniArtikal = LS.GetItem<List<Artikal>>("CuvajKorpu");
+            }
+            await ShopServer.SendAsync("SviArtikli");
+
+        }
+
+
+
+
+        public void DodajUKorpu(Artikal a)
+        {
+            Artikal art = new Artikal(a.ID, a.Naziv, 1, a.Cena);
+
+
+            if (IzabraniArtikal.Count == 0)
+            {
+                IzabraniArtikal.Add(art);
+
+            }
+            else
+            {
+                for (int i = 0; i < IzabraniArtikal.Count; i++)
+                {
+                    if (IzabraniArtikal[i].ID == art.ID)
+                    {
+                        IzabraniArtikal[i].Kolicina += 1;
+                        LS.SetItem("CuvajKorpu", IzabraniArtikal);
+                        return;
+                    }
+                }
+                IzabraniArtikal.Add(art);
+            }
+
+            LS.SetItem("CuvajKorpu", IzabraniArtikal);
+
+
+        }
+
+
+
 
     }
-
-    public void  PrikaziArtikle()
-    {
-        ShopServer.SendAsync("SviArtikli");
-    }
-
-
-    public void DodajUKorpu(Artikal a)
-    {
-        IzabraniArtikal.Add(a);
-        //Console.WriteLine("U metodi Dodaj korpu sam");
-        //Artikal art = new Artikal(a.Naziv, 1, a.Cena);
-
-        //if (IzabraniArtikal.Count == 0)
-        //{
-        //    Console.WriteLine("U ifu sam");
-        //    IzabraniArtikal.Add(art);
-
-        //}
-        //else
-        //{
-
-        //    for (int i = 0; i < IzabraniArtikal.Count; i++)
-        //    {
-        //        if (IzabraniArtikal[i].SKU == art.SKU)
-        //        {
-        //            Console.WriteLine("U drugom ifu sam");
-        //            IzabraniArtikal[i].Kolicina += 1;
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("Nisam nasao artikal");
-        //            IzabraniArtikal.Add(art);
-        //        }
-        //    }
-        //}
-
-        LS.SetItem("CuvajKorpu", IzabraniArtikal);
-
-    }
-
-
-
-
-}

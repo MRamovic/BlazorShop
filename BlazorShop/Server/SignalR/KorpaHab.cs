@@ -23,7 +23,6 @@ namespace BlazorShop.Server.SignalR
                 lisart.Add(NB.Artikals.Find(a.ID));
             }
 
-
             NB.Racunis.Add(rac);
 
             foreach (Artikal a in lisart)
@@ -31,6 +30,24 @@ namespace BlazorShop.Server.SignalR
                 NB.ArtikalRacunis.Add(new ArtikalRacuni(a, rac));
             }
             NB.SaveChanges();
+        }
+
+        public async Task BrisanjeIzBaze(List<Artikal> la)
+        {
+            Console.WriteLine("U metodi brisanje sam!");
+            Baza NB = new Baza();
+            var sad  = NB.Artikals.ToList();
+            foreach(Artikal ar in sad)
+            {
+                foreach (Artikal ar2 in la)
+                {
+                    if(ar.ID==ar2.ID)
+                    {
+                        NB.Artikals.Find(ar2.ID).Kolicina -= ar2.Kolicina;
+                        await NB.SaveChangesAsync();
+                    }
+                }
+            }
         }
     }
 }
