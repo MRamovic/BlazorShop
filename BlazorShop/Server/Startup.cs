@@ -54,6 +54,7 @@ namespace BlazorShop.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<LoginReg>("habloginreg");
                 endpoints.MapHub<hab>("server");
                 endpoints.MapHub<ShopHab>("habshop");
                 endpoints.MapHub<DodajArtikalHab>("habdodajartikal");

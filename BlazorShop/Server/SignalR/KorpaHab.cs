@@ -11,11 +11,13 @@ namespace BlazorShop.Server.SignalR
     public class KorpaHab : Hub
     {
 
-        public async Task KorpaRacun(List<Artikal> la)
+        public async Task KorpaRacun(List<Artikal> la, User u)
         {
             Baza NB = new Baza();
 
             var rac=new Racuni();
+            
+            
             var lisart = new List<Artikal>();
 
             foreach(Artikal a in la)
@@ -25,10 +27,17 @@ namespace BlazorShop.Server.SignalR
 
             NB.Racunis.Add(rac);
 
+            
             foreach (Artikal a in lisart)
             {
                 NB.ArtikalRacunis.Add(new ArtikalRacuni(a, rac));
             }
+
+            var kor =NB.Users.Find(u.Username);
+
+            rac.korID = kor.Username;
+            rac.kor = kor;
+            
             NB.SaveChanges();
         }
 

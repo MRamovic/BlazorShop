@@ -8,13 +8,12 @@ namespace BlazorShop.Shared
     {
         public int ID { get; set; }
         public DateTime DatumIzdavanjaRacuna { get; set; } =  DateTime.Now;
+        public User kor { get; set; }
+        public string korID { get; set; }
         
         public ICollection<ArtikalRacuni> PoruceniArtikli { get;  set; }
         
         public Racuni() { }
-        //public Racuni(DateTime DIR)
-        //{
-        //    DatumIzdavanjaRacuna = DIR;
-        //}
+    
     }
 }

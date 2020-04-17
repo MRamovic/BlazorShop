@@ -12,15 +12,22 @@ namespace BlazorShop.Server.EF
         public DbSet<Artikal>  Artikals { get; set; }
         public DbSet<ArtikalRacuni> ArtikalRacunis { get; set; }
         public DbSet<Racuni> Racunis { get; set; }
+        public DbSet<User> Users { get;  set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasKey(u => u.Username);
             modelBuilder.Entity<Artikal>().HasKey(i => i.ID);
-            
-           
+
+
+
+
             modelBuilder.Entity<ArtikalRacuni>().HasKey(ar => new { ar.IDA, ar.IDR });
             modelBuilder.Entity<ArtikalRacuni>().HasOne(ar => ar.art).WithMany(k => k.Racunii).HasForeignKey(ar=>ar.IDA);
             modelBuilder.Entity<ArtikalRacuni>().HasOne(ar => ar.rac).WithMany(k => k.PoruceniArtikli).HasForeignKey(ar => ar.IDR);
+
+            modelBuilder.Entity<Racuni>().HasOne(u => u.kor).WithMany(k => k.KolekcijaRacuna).HasForeignKey(uk => uk.korID);
 
         }
 

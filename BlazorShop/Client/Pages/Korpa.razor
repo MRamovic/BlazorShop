@@ -5,39 +5,47 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService LS
 
 <h1>Korpa</h1>
+
+@if (LogickaVr)
+{
+    <h2>Morate se Ulogovati!</h2>
+    <a href=""><button class="btn btn-primary">Log In</button></a>
+
+}
 <h2>Vas racun</h2>
 
 
-    <table style="text-align:center" class="table">
+<table style="text-align:center" class="table">
+    <tr>
+        <th></th>
+        <th>Sifra art.</th>
+        <th>Naziv</th>
+        <th>Cena</th>
+        <th>Kolicina</th>
+        <th> Ukupno</th>
+    </tr>
+    @{ Svega = 0;}
+    @foreach (Artikal a in PoruceniArtikli)
+    {
         <tr>
-            <th></th>
-            <th>Sifra art.</th>
-            <th>Naziv</th>
-            <th>Cena</th>
-            <th>Kolicina</th>
-            <th> Ukupno</th>
-        </tr>
-        @foreach (Artikal a in PoruceniArtikli)
-        {
-            <tr>
-                <td><button @onclick="(() => UkloniIzKorpe(a))" class="btn btn-primary">Ukloni</button></td>
+            <td><button @onclick="(() => UkloniIzKorpe(a))" class="btn btn-primary">Ukloni</button></td>
 
-                <td>@a.ID</td>
-                <td>@a.Naziv</td>
-                <td>@a.Cena</td>
-                <td>@a.Kolicina</td>
-                <td>@(a.Cena * a.Kolicina)</td>
-                @{ Svega += a.Cena * a.Kolicina;}
-                
-            </tr>
+            <td>@a.ID</td>
+            <td>@a.Naziv</td>
+            <td>@a.Cena</td>
+            <td>@a.Kolicina</td>
+            <td>@(a.Cena * a.Kolicina)</td>
+            @{ Svega += a.Cena * a.Kolicina;}
 
-                    }
-        <tr>
-            <td colspan="4" style="border-left: hidden; border-bottom:hidden"></td>
-            <td style="border:2px solid black; font-style:italic, oblique; background-color:darkgray" >Svega:</td>
-            <td >@Svega</td>
         </tr>
-    </table>
+
+    }
+    <tr>
+        <td colspan="4" style="border-left: hidden; border-bottom:hidden"></td>
+        <td style="border:2px solid black; font-style:italic, oblique; background-color:darkgray">Svega:</td>
+        <td>@Svega</td>
+    </tr>
+</table>
 
 
 
@@ -55,6 +63,8 @@
     public List<Artikal> KupljeniArtikli = new List<Artikal>();
     public decimal UkupnaCena = 0;
     public decimal Svega = 0;
+    public User LogInKorisnik { get; set; }
+    public bool LogickaVr { get; set; } = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -74,15 +84,28 @@
 
     async Task ZavrsiRacun()
     {
-        await KorpaServer.SendAsync("KorpaRacun", PoruceniArtikli);
-        await KorpaServer.SendAsync("BrisanjeIzBaze", PoruceniArtikli);
-        PoruceniArtikli.Clear();
-        LS.RemoveItem("CuvajKorpu");
+        if (LS.GetItem<User>("CuvajJuzera") != null)
+        {
+            LogInKorisnik = LS.GetItem<User>("CuvajJuzera");
+            await KorpaServer.SendAsync("KorpaRacun", PoruceniArtikli, LogInKorisnik);
+            await KorpaServer.SendAsync("BrisanjeIzBaze", PoruceniArtikli);
+
+            PoruceniArtikli.Clear();
+            LS.RemoveItem("CuvajKorpu");
+            LS.RemoveItem("CuvajJuzera");
+            LogickaVr = false;
+        }
+        else
+        {
+            LogickaVr = true;
+        }
+
     }
 
     public void UkloniIzKorpe(Artikal a)
     {
-        PoruceniArtikli.Remove(a);  
+        PoruceniArtikli.Remove(a);
         LS.SetItem("CuvajKorpu", PoruceniArtikli);
+        StateHasChanged();
     }
 }

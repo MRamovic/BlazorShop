@@ -11,6 +11,8 @@ namespace BlazorShop.Shared
         public int IDR { get;  set;  }
         public Racuni rac { get; set; }
 
+       
+
         public ArtikalRacuni() { }
 
         public ArtikalRacuni(Artikal A, Racuni R)
