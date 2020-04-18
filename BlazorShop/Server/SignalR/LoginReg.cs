@@ -19,8 +19,8 @@ namespace BlazorShop.Server.SignalR
 			if (juzer != null)
 			{
 				await Clients.Caller.SendAsync("EvoJuzera", juzer);
+				Console.WriteLine("Ulogovani ste!");
 			}
-			
 		}
 		public async Task PrihvatiKorisnika(User u)
 		{

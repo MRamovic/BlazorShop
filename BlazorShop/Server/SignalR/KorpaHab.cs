@@ -22,7 +22,7 @@ namespace BlazorShop.Server.SignalR
 
             foreach(Artikal a in la)
             {
-                lisart.Add(NB.Artikals.Find(a.ID));
+                lisart.Add(NB.Artikals.Find(a.SKU));
             }
 
             NB.Racunis.Add(rac);
@@ -50,9 +50,9 @@ namespace BlazorShop.Server.SignalR
             {
                 foreach (Artikal ar2 in la)
                 {
-                    if(ar.ID==ar2.ID)
+                    if(ar.SKU==ar2.SKU)
                     {
-                        NB.Artikals.Find(ar2.ID).Kolicina -= ar2.Kolicina;
+                        NB.Artikals.Find(ar2.SKU).Kolicina -= ar2.Kolicina;
                         await NB.SaveChangesAsync();
                     }
                 }

@@ -18,7 +18,7 @@ namespace BlazorShop.Server.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(u => u.Username);
-            modelBuilder.Entity<Artikal>().HasKey(i => i.ID);
+            modelBuilder.Entity<Artikal>().HasKey(i => i.SKU);
 
 
 

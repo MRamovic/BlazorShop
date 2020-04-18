@@ -5,7 +5,7 @@
     <h3>Login</h3>
 <EditForm Model="@zaLogovanje" OnSubmit="Submit">
     <p>Username: <InputText @bind-Value="zaLogovanje.Username" /></p>
-    <p>Password: <InputText @bind-Value="zaLogovanje.Password" /></p>
+    <p>Password: <InputText @bind-Value="zaLogovanje.Password" type="password" /></p>
     <button class="btn btn-primary" type="submit"> Log In</button>
 </EditForm>
 

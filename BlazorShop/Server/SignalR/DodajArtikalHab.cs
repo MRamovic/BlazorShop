@@ -9,60 +9,57 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace BlazorShop.Server.SignalR
 {
-    public class DodajArtikalHab:Hub
+    public class DodajArtikalHab : Hub
     {
 
-        
+
         public async Task PrihvatiArtikal(List<Artikal> a)
         {
 
-
-
             Console.WriteLine("U metodi PrihvatiArtikal sam!");
             Baza NB = new Baza();
+            var la = NB.Artikals.ToList();
 
-            foreach (Artikal art in a)
+
+            if (la.Count == 0)
             {
-                Console.WriteLine($"{art.Naziv}");
-                NB.Artikals.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
+                foreach (Artikal art in a)
+                {
+                    NB.Artikals.Add(new Artikal(art.SKU, art.Naziv, art.Kolicina, art.Cena));
+                    Console.WriteLine("Lista prazna, pravim novi artikal!");
+                }
             }
+            else
+            {
+   
+                    Console.WriteLine("Prvi foreach");
+                    foreach (Artikal art in a)
+                    {
+                    var promenljiva = NB.Artikals.Find(art.SKU);
+                        Console.WriteLine("Drugi foreach");
+                        if (promenljiva!=null)
+                        {
+                            Console.WriteLine("If u foreach");
+                            promenljiva.Kolicina += art.Kolicina;
+                        }
+                        else
+                        {
+                            {
+                                Console.WriteLine($"U else sam + novi {art}");
+                                NB.Artikals.Add(new Artikal(art.SKU, art.Naziv, art.Kolicina, art.Cena));
+                            }
+                        }
+                    }
 
+            }
             await NB.SaveChangesAsync();
 
 
-            //    Console.WriteLine("U metodi PrihvatiArtikal sam!");
-            //    Baza NB = new Baza();
-            //    var la = NB.Artikals.ToList();
-            //    if (la.Count == 0)
-            //    {
-            //        foreach (Artikal art in a)
-            //        {
-            //            NB.Artikals.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
-            //        }
-            //    }
-            //    else
-            //    {
-
-            //        foreach (Artikal art in a)
-            //        {
-            //            foreach (Artikal art2 in la)
-            //            {
-            //                if (art.ID == art2.ID)
-            //                {
-            //                    NB.Artikals.Find(art.ID).Kolicina += art.Kolicina;
-            //                }
-            //                else
-            //                {
-            //                    Console.WriteLine($"{art.Naziv}");
-            //                    NB.Artikals.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
-            //                }
-            //            }
-            //        }
-            //    }
-            //    await NB.SaveChangesAsync();
 
         }
+
     }
 }
+
 
 

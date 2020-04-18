@@ -6,7 +6,7 @@ namespace BlazorShop.Shared
 {
     public class Artikal
     {
-        public int ID { get; set; }
+       // public int ID { get; set; }
         public string SKU { get; set; }
         public string Naziv { get; set; }
         public int Kolicina { get; set; }
@@ -28,14 +28,14 @@ namespace BlazorShop.Shared
             Kolicina = k;
             Cena = c;
         }
-        public Artikal(int i,  string n, int k, int c)
-        {
-            ID = i;
+        //public Artikal(int i,  string n, int k, int c)
+        //{
+        //    ID = i;
             
-            Naziv = n;
-            Kolicina = k;
-            Cena = c;
-        }
+        //    Naziv = n;
+        //    Kolicina = k;
+        //    Cena = c;
+        //}
         public override string ToString()
         {
             return $"   { Naziv} ----  {Kolicina} - {Cena}  ";

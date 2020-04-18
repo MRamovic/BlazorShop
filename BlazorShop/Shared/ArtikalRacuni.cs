@@ -6,7 +6,7 @@ namespace BlazorShop.Shared
 {
     public class ArtikalRacuni
     {
-        public int IDA {  get;  set;  }
+        public string IDA {  get;  set;  }
         public Artikal art { get; set; }
         public int IDR { get;  set;  }
         public Racuni rac { get; set; }
@@ -17,7 +17,7 @@ namespace BlazorShop.Shared
 
         public ArtikalRacuni(Artikal A, Racuni R)
         {
-            IDA  =  A.ID;
+            IDA  =  A.SKU;
             art  =  A;
             IDR  =  R.ID;
             rac =  R;

@@ -4,70 +4,9 @@
 @inject NavigationManager NM
 @inject Blazored.LocalStorage.ISyncLocalStorageService LS
 
-
 <h1>WEB SHOP-C#</h1>
 
-
-
-@if (Juzer == null)
-{
-    @if (txtDugme == "Registruj se!")
-    {
-        <Login KodPodKomponente="EventHandlerKodRoditelja" KaServeruLogovanje=@LoginRegServer />
-    }
-    else
-    {
-        <Registracija Dodavanje="DodajJuzera" />
-    }
-    <button @onclick="Toggle">@txtDugme</button>
-}
-@*else
-    {
-
-    }*@
-
-
-
-
 @code {
+    
 
-    public HubConnection LoginRegServer;
-    public User Juzer { get; set; }
-    public string txtDugme { get; set; } = "Registruj se!";
-
-    protected override async Task OnInitializedAsync()
-    {
-        LoginRegServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habloginreg")).Build();
-
-
-
-        await LoginRegServer.StartAsync();
-    }
-
-
-    public void Toggle()
-    {
-        if (txtDugme == "Registruj se!")
-        {
-            txtDugme = "Uloguj se!";
-        }
-        else
-        {
-            txtDugme = "Registruj se!";
-        }
-    }
-
-    public void DodajJuzera(User novi)
-    {
-        LoginRegServer.SendAsync("PrihvatiKorisnika", novi);
-
-        txtDugme = "Registruj se!";
-    }
-
-    public void EventHandlerKodRoditelja(User nesto)
-    {
-        
-        Juzer = nesto;
-        LS.SetItem("CuvajJuzera", Juzer);
-    }
 }

@@ -9,11 +9,15 @@
 @if (LogickaVr)
 {
     <h2>Morate se Ulogovati!</h2>
-    <a href=""><button class="btn btn-primary">Log In</button></a>
+    @*<a href=""><button class="btn btn-primary">Log In</button></a>*@
+    <button class="btn btn-primary" @onclick="Idinalogin">Log In</button>
+}
 
+@if (OtvoriLogIn)
+{ 
+    <Login KodPodKomponente="EventHandlerKodRoditelja" KaServeruLogovanje=@LogInRegServer />
 }
 <h2>Vas racun</h2>
-
 
 <table style="text-align:center" class="table">
     <tr>
@@ -30,7 +34,7 @@
         <tr>
             <td><button @onclick="(() => UkloniIzKorpe(a))" class="btn btn-primary">Ukloni</button></td>
 
-            <td>@a.ID</td>
+            <td>@a.SKU</td>
             <td>@a.Naziv</td>
             <td>@a.Cena</td>
             <td>@a.Kolicina</td>
@@ -38,25 +42,20 @@
             @{ Svega += a.Cena * a.Kolicina;}
 
         </tr>
-
     }
     <tr>
         <td colspan="4" style="border-left: hidden; border-bottom:hidden"></td>
-        <td style="border:2px solid black; font-style:italic, oblique; background-color:darkgray">Svega:</td>
-        <td>@Svega</td>
+        <td style=" font-style:italic, oblique;  text-align:right">Ukupno:</td>
+        <td style="border:2px solid black; font-style:italic, oblique; background-color:darkgrey">@Svega</td>
     </tr>
 </table>
 
-
-
-
 <button class="btn btn-primary" @onclick="ZavrsiRacun">Zavrsi racun</button>
-
-
 
 @code {
 
     public HubConnection KorpaServer;
+    public HubConnection LogInRegServer;
 
     public Artikal art2 = new Artikal();
     public List<Artikal> PoruceniArtikli = new List<Artikal>();
@@ -64,17 +63,23 @@
     public decimal UkupnaCena = 0;
     public decimal Svega = 0;
     public User LogInKorisnik { get; set; }
-    public bool LogickaVr { get; set; } = false;
 
+    public bool LogickaVr { get; set; } = false;
+    public bool OtvoriLogIn { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
 
         KorpaServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habkorpa")).Build();
-
-
+        LogInRegServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habloginreg")).Build();
 
         await KorpaServer.StartAsync();
+        await LogInRegServer.StartAsync();
+
+        if (LS.GetItem<User>("CuvajJuzera") != null)
+        {
+            LogInKorisnik = LS.GetItem<User>("CuvajJuzera");
+        }
 
         if (LS.ContainKey("CuvajKorpu"))
         {
@@ -99,7 +104,18 @@
         {
             LogickaVr = true;
         }
+    }
 
+    public void Idinalogin()
+    {
+        if (OtvoriLogIn)
+        {
+            OtvoriLogIn = false;
+        }
+        else
+        {
+            OtvoriLogIn = true;
+        }
     }
 
     public void UkloniIzKorpe(Artikal a)
@@ -108,4 +124,11 @@
         LS.SetItem("CuvajKorpu", PoruceniArtikli);
         StateHasChanged();
     }
+
+    public void EventHandlerKodRoditelja(User nesto)
+    {
+        LogInKorisnik = nesto;
+        LS.SetItem("CuvajJuzera", LogInKorisnik);
+    }
+
 }

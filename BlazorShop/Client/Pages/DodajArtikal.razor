@@ -9,6 +9,11 @@
 
 <EditForm Model="art" OnValidSubmit="NapraviArtikal">
     <dev>
+        <p />
+        <p>SKU</p>
+        <InputText @bind-Value="art.SKU" />
+    </dev>
+    <dev>
         <p/>
         <p>Naziv</p>
         <InputText @bind-Value="art.Naziv" />
@@ -41,7 +46,7 @@
 <button @onclick="SaljiArtikal" class="btn btn-primary">Sacuvaj</button>
 
 <button @onclick="DodajArt" class="btn btn-primary">Dodaj rucno art</button>
-
+<button @onclick="DodajArt2" class="btn btn-primary">Dodaj rucno art2</button>
 
 
 @code {
@@ -73,23 +78,35 @@
     public void NapraviArtikal()
     {
 
-        lArt.Add(new Artikal(art.Naziv, art.Kolicina, art.Cena));
+        lArt.Add(new Artikal(art.SKU, art.Naziv, art.Kolicina, art.Cena));
         art = new Artikal();
 
     }
     public void SaljiArtikal()
     {
         DodajArtikalServer.SendAsync("PrihvatiArtikal", lArt);
+        lArt.Clear();
     }
 
-  
+
     public void DodajArt()
     {
         List<Artikal> art2 = new List<Artikal>();
-        art2.Add(new Artikal("123","koka kola", 20, 30));
-        art2.Add(new Artikal("112","fanta", 10, 15));
-        art2.Add(new Artikal("115","sprite", 30, 50));
-        art2.Add(new Artikal("119","bitter lemon", 40, 35));
+        art2.Add(new Artikal("SKU111", "koka kola", 20, 30));
+        art2.Add(new Artikal("SKU112", "fanta", 10, 15));
+        art2.Add(new Artikal("SKU113", "sprite", 30, 50));
+        art2.Add(new Artikal("SKU114", "bitter lemon", 40, 35));
+        DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
+    }
+
+    public void DodajArt2()
+    {
+        List<Artikal> art2 = new List<Artikal>();
+        art2.Add(new Artikal("SKU1111", "koka kola", 20, 30));
+        art2.Add(new Artikal("SKU1112", "fanta", 10, 15));
+        art2.Add(new Artikal("SKU1113", "sprite", 30, 50));
+        art2.Add(new Artikal("SKU1114", "bitter lemon", 40, 35));
         DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
     }
 }
+
