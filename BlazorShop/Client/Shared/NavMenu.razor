@@ -18,11 +18,14 @@
                 <span class="oi oi-briefcase" aria-hidden="true"></span> Shop
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="dodajartikal">
+        @if (Promenljiva)
+        { 
+        <li class="nav-item px-3" >
+            <NavLink class="nav-link" href="dodajartikal" >
                 <span class="oi oi-plus" aria-hidden="true"></span> Dodaj artikal
             </NavLink>
         </li>
+        }
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="korpa">
                 <span class="oi oi-basket" aria-hidden="true"></span> Korpa
@@ -45,6 +48,7 @@
     private bool collapseNavMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    public bool Promenljiva { get; set; } = false;
 
     private void ToggleNavMenu()
     {

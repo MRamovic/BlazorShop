@@ -54,8 +54,6 @@ namespace BlazorShop.Server.SignalR
             }
             await NB.SaveChangesAsync();
 
-
-
         }
 
     }

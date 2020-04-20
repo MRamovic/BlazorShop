@@ -20,7 +20,7 @@
 
     public void Submit()
     {
-        KaServeruLogovanje.On<User>("EvoJuzera", us => KodPodKomponente.InvokeAsync(us));
+        KaServeruLogovanje.On<User>("EvoJuzera", us =>KodPodKomponente.InvokeAsync(us));
         KaServeruLogovanje.SendAsync("ProveriKorisnika", zaLogovanje);
     }
 

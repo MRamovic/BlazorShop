@@ -6,10 +6,14 @@
 @inject Blazored.LocalStorage.ISyncLocalStorageService LS
 
 <h1>Shop</h1>
-<form class="example" action="action_page.php">
-    <input type="text" placeholder="Search.." name="search">
-    <button class="btn btn-primary" type="submit"><i class="oi oi-magnifying-glass"></i></button>
-</form>
+
+
+<div>
+<input type="text" placeholder="Search..." @bind-value="Pretrazi" />
+<button type="submit" class="btn btn-primary" @onclick="(() => PretraziArtikal(Pretrazi))"><i class="oi oi-magnifying-glass"></i></button>
+</div>
+
+
 
 <div style="float:left; width:50%; position:page "><h2>Artikli</h2></div>
 <div style="float:left; width:50%; position:page"><h2>Izabrali ste:</h2></div>
@@ -24,16 +28,21 @@
             <th>Cena</th>
             <th>Kolicina</th>
         </tr>
+        
         @foreach (Artikal a in lArt)
         {
             <tr>
-                <td><button @onclick="(()=>DodajUKorpu(a))" class="btn btn-primary">Dodaj</button></td>
+                @{ if (a.Kolicina > 0) { dugme = false; } else { dugme = true; }
+                }
+                <td><button @onclick="(() => DodajUKorpu(a))"  disabled="@dugme" class="btn btn-primary">Dodaj</button></td>
                 <td>@a.SKU</td>
                 <td>@a.Naziv</td>
                 <td>@a.Cena</td>
                 <td>@a.Kolicina</td>
             </tr>
         }
+    
+
     </table>
 </div>
 <div style=" width: 50%; max-height: 570px; position: page; float: left;overflow:scroll; overflow-x:hidden; border-left: 2px double red; padding-left: 5px ">
@@ -44,7 +53,7 @@
             <th>Naziv</th>
             <th>Cena</th>
             <th>Kolicina</th>
-        </tr>
+        </tr>  
         @foreach (Artikal a in IzabraniArtikal)
         {
             <tr>
@@ -62,37 +71,51 @@
     public HubConnection ShopServer;
     public List<Artikal> lArt = new List<Artikal>();
     public List<Artikal> IzabraniArtikal = new List<Artikal>();
+    public string Pretrazi { get; set; }
+    public string Rec { get; set; }
 
     public decimal UkupnaCena { get; set; } = 0;
-    Artikal art = new Artikal();
+    public Artikal art = new Artikal();
+   
+
+
+    public bool dugme { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
 
         ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
+        await ShopServer.StartAsync();
 
 
-        ShopServer.On<List<Artikal>>("ArtikalMetoda", lart =>
+        ShopServer.On<List<Artikal>>("ArtikalMetoda", lart =>    //ArtikalMetoda je naziv ove metode
 
         {
             lArt = lart;
             StateHasChanged();
         });
 
-        await ShopServer.StartAsync();
+        ShopServer.On<List<Artikal>>("ArtikalMetoda2", lart =>    //ArtikalMetoda je naziv ove metode
+
+        {
+            lArt = lart;
+            StateHasChanged();
+        });
+
 
         if (LS.ContainKey("CuvajKorpu"))
         {
             IzabraniArtikal = LS.GetItem<List<Artikal>>("CuvajKorpu");
+            
         }
-        await ShopServer.SendAsync("SviArtikli");
 
+        await ShopServer.SendAsync("SviArtikli");
     }
 
     public void DodajUKorpu(Artikal a)
     {
         Artikal art = new Artikal(a.SKU, a.Naziv, 1, a.Cena);
-
+        ShopServer.SendAsync("ArtikliIzKorpe", a, lArt);
 
         if (IzabraniArtikal.Count == 0)
         {
@@ -107,6 +130,7 @@
                 {
                     IzabraniArtikal[i].Kolicina += 1;
                     LS.SetItem("CuvajKorpu", IzabraniArtikal);
+
                     return;
                 }
             }
@@ -114,6 +138,25 @@
         }
 
         LS.SetItem("CuvajKorpu", IzabraniArtikal);
+        //ShopServer.SendAsync("ArtikliIzKorpe", IzabraniArtikal);
+        //ShopServer.SendAsync("ArtikliIzKorpe", IzabraniArtikal);
     }
+    public void PretraziArtikal(string a)
+    {
+        Rec = a;
+        ShopServer.SendAsync("PretragaArtikla", Rec);
+    }
+
+    //public void Toggle()
+    //{
+    //    if (dugme)
+    //    {
+    //        dugme = false;
+    //    }
+    //    else
+    //    {
+    //        dugme = true;
+    //    }
+    //}
 
 }
