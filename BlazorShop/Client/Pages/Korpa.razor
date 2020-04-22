@@ -9,13 +9,14 @@
 @if (LogickaVr)
 {
     <h2>Morate se Ulogovati!</h2>
-    @*<a href=""><button class="btn btn-primary">Log In</button></a>*@
-    <button class="btn btn-primary" @onclick="Idinalogin">Log In</button>
+   
+   <button class="btn btn-primary" @onclick="Idinalogin">Log In</button>
 }
 
 @if (OtvoriLogIn)
 { 
     <Login KodPodKomponente="EventHandlerKodRoditelja" KaServeruLogovanje=@LogInRegServer />
+    <button @onclick="UkloniLogin" class="btn btn-primary">Izlaz</button>
 }
 <h2>Vas racun</h2>
 
@@ -60,12 +61,14 @@
     public Artikal art2 = new Artikal();
     public List<Artikal> PoruceniArtikli = new List<Artikal>();
     public List<Artikal> KupljeniArtikli = new List<Artikal>();
+    public List<Artikal> PomocnaLista = new List<Artikal>();
     public decimal UkupnaCena = 0;
     public decimal Svega = 0;
     public User LogInKorisnik { get; set; }
 
     public bool LogickaVr { get; set; } = false;
     public bool OtvoriLogIn { get; set; } = false;
+    public bool LogVr { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,6 +101,7 @@
             PoruceniArtikli.Clear();
             LS.RemoveItem("CuvajKorpu");
             LS.RemoveItem("CuvajJuzera");
+            LS.RemoveItem("OstaliArtikli");
             LogickaVr = false;
         }
         else
@@ -116,19 +120,36 @@
         {
             OtvoriLogIn = true;
         }
+        LogickaVr = false;
     }
 
     public void UkloniIzKorpe(Artikal a)
     {
+        PomocnaLista = LS.GetItem<List<Artikal>>("PreostaliArtikli");
+        for (int i = 0; i < PomocnaLista.Count; i++)
+        {
+            if (PomocnaLista[i].SKU == a.SKU)
+            {
+                PomocnaLista[i].Kolicina += a.Kolicina;
+            }
+        }
         PoruceniArtikli.Remove(a);
         LS.SetItem("CuvajKorpu", PoruceniArtikli);
+        LS.SetItem("PreostaliArtikli", PomocnaLista);
         StateHasChanged();
+
     }
 
     public void EventHandlerKodRoditelja(User nesto)
     {
         LogInKorisnik = nesto;
         LS.SetItem("CuvajJuzera", LogInKorisnik);
+    }
+
+    public void UkloniLogin()
+    {
+        LogickaVr = true;
+        OtvoriLogIn = false;
     }
 
 }

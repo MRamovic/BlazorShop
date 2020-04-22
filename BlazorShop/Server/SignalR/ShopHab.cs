@@ -30,24 +30,9 @@ namespace BlazorShop.Server.SignalR
             await Clients.Caller.SendAsync("ArtikalMetoda", lArt3);
           
         }
-        public async Task ArtikliIzKorpe(Artikal a, List<Artikal> lart)
-        {
-            Baza NB = new Baza();
-            
-            var artikal = NB.Artikals.Find(a.SKU);
-            
-           
-            for (int x=0; x<lart.Count; x++)
-            {
-                if(lart[x].SKU==artikal.SKU)
-                {
-                    lart[x].Kolicina -= 1;
-                }
-            }
-            
-            await Clients.Caller.SendAsync("ArtikalMetoda2",lart);
-            
-        }
+
 
     }
 }
+
+

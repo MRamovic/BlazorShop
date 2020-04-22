@@ -16,14 +16,14 @@
         <EditForm Model="@Juzer" OnSubmit="Submit">
             <InputText @bind-Value="Juzer.Username" placeholder="Username" name="Username" />
             <InputText @bind-Value="Juzer.Password" placeholder="Password" type="password" name="pass" />
-            <button class="oi oi-account-login, btn btn-outline-success, type="submit"> Log In</button> 
+            <button class="oi oi-account-login, btn btn-outline-success, type="submit" >  Log In</button> 
         </EditForm>
-       
+
             <a href="registracijalogin"><button class="oi-account-login, btn btn-outline-success" type="submit"> Registracija</button></a>
-      }else
-        {
+        }
+        else { 
             <a><button class="oi oi-account-logout btn btn-outline-success" @onclick="OdjaviJuzera" type="submit"> Logout</button></a>
-          }
+        }
     </div>
 
     <div class="content px-4">
@@ -36,6 +36,7 @@
     public User Juzer { get; set; } = new User();
     public HubConnection MainServer;
     public bool LogovaniKorisnik { get; set; }
+    public bool Osvezi { get; set; } = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -44,7 +45,10 @@
 
         if (LS.GetItem<User>("CuvajJuzera") != null)
         {
-            Juzer = LS.GetItem<User>("CuvajJuzera");    
+            Juzer = LS.GetItem<User>("CuvajJuzera");
+            LogovaniKorisnik = true;
+            StateHasChanged();
+
         }
 
         await MainServer.StartAsync();
@@ -54,10 +58,14 @@
     {
         MainServer.On<User>("EvoJuzera", us =>
         {
-            Juzer = us;
-            LogovaniKorisnik = true;
-            LS.SetItem("CuvajJuzera", Juzer);
-            StateHasChanged();
+           
+            
+                Juzer = us;
+                LogovaniKorisnik = true;
+                LS.SetItem("CuvajJuzera", Juzer);
+                
+                StateHasChanged();
+            
         });
         MainServer.SendAsync("ProveriKorisnika", Juzer);
     }
@@ -67,5 +75,6 @@
         Juzer = new User();
         LS.RemoveItem("CuvajJuzera");
         LogovaniKorisnik = false;
+        StateHasChanged();
     }
 }

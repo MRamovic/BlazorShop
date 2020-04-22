@@ -20,8 +20,9 @@
 }
 else
     {
-    <h2>Juzer je tu! </h2>
+    <h2>Prijavljen: @Juzer.Username</h2>
     }
+<p>@NM</p>
 @code {
     public HubConnection LoginRegServer;
     public User Juzer { get; set; }
@@ -63,5 +64,7 @@ else
 
         Juzer = nesto;
         LS.SetItem("CuvajJuzera", Juzer);
+        
+        StateHasChanged();
     }
 }

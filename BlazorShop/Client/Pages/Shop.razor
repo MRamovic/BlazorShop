@@ -76,14 +76,14 @@
 
     public decimal UkupnaCena { get; set; } = 0;
     public Artikal art = new Artikal();
-   
+
 
 
     public bool dugme { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-
+        LS.RemoveItem("OstaliArtikli");
         ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
         await ShopServer.StartAsync();
 
@@ -95,27 +95,35 @@
             StateHasChanged();
         });
 
-        ShopServer.On<List<Artikal>>("ArtikalMetoda2", lart =>    //ArtikalMetoda je naziv ove metode
-
-        {
-            lArt = lart;
-            StateHasChanged();
-        });
+        
 
 
         if (LS.ContainKey("CuvajKorpu"))
         {
             IzabraniArtikal = LS.GetItem<List<Artikal>>("CuvajKorpu");
-            
+            lArt = LS.GetItem<List<Artikal>>("PreostaliArtikli");
+
+        }
+        else
+        {
+            await ShopServer.SendAsync("SviArtikli");
         }
 
-        await ShopServer.SendAsync("SviArtikli");
     }
 
     public void DodajUKorpu(Artikal a)
     {
         Artikal art = new Artikal(a.SKU, a.Naziv, 1, a.Cena);
-        ShopServer.SendAsync("ArtikliIzKorpe", a, lArt);
+
+        for (int i = 0; i < lArt.Count; i++)
+        {
+            if (lArt[i].SKU == art.SKU)
+            {
+                lArt[i].Kolicina -= 1;
+            }
+        }
+
+        LS.SetItem("PreostaliArtikli", lArt);
 
         if (IzabraniArtikal.Count == 0)
         {
@@ -124,22 +132,24 @@
         }
         else
         {
+
             for (int i = 0; i < IzabraniArtikal.Count; i++)
             {
                 if (IzabraniArtikal[i].SKU == art.SKU)
                 {
                     IzabraniArtikal[i].Kolicina += 1;
-                    LS.SetItem("CuvajKorpu", IzabraniArtikal);
 
+                    LS.SetItem("CuvajKorpu", IzabraniArtikal);
                     return;
                 }
             }
+
+
             IzabraniArtikal.Add(art);
         }
 
         LS.SetItem("CuvajKorpu", IzabraniArtikal);
-        //ShopServer.SendAsync("ArtikliIzKorpe", IzabraniArtikal);
-        //ShopServer.SendAsync("ArtikliIzKorpe", IzabraniArtikal);
+        StateHasChanged();
     }
     public void PretraziArtikal(string a)
     {
