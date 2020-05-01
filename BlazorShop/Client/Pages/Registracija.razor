@@ -7,10 +7,21 @@
     <EditForm Model="@Korisnik" OnValidSubmit="OK">
         <DataAnnotationsValidator />
         <ValidationSummary />
-        <p>Username: <InputText @bind-Value="Korisnik.Username" /></p>
-        <p>Password: <InputText @bind-Value="Korisnik.Password" /></p>
+        <p> Administrator: <input type="checkbox" @bind-value="Korisnik.Administrator"  /> </p>
+        <p>Username: <InputText @bind-Value="Korisnik.Username" /> </p>
+        <p>Password: <InputText @bind-Value="Korisnik.Password" type="password" /> </p>
+        <p>Ime:      <InputText @bind-Value="Korisnik.ImeKorisnika" /></p>
+        <p>Prezime:  <InputText @bind-Value="Korisnik.PrezimeKorisnika" /> </p>
+        <p>Grad:     <InputText @bind-Value="Korisnik.GradKorisnika" /> </p>
+        <p>Adresa:   <InputText @bind-Value="Korisnik.AdresaKorisnika" /> </p>
+        <p>E-mail:   <InputText @bind-Value="Korisnik.EmailKorisnika" /> </p>
+        <p>Kontakt:  <InputText @bind-Value="Korisnik.KontaktKorisnika" /> </p>
+        <p><input type="file" name="filename" accept="image/gif, image/jpeg, image/png"></p>
+        <p></p>
         <button class="btn btn-primary" type="submit">Registruj korisnika</button>
+
     </EditForm>
+
 
 @code {
     public User Korisnik = new User();

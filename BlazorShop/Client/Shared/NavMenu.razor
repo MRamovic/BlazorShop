@@ -1,4 +1,7 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@inject Blazored.LocalStorage.ISyncLocalStorageService LS
+@using BlazorShop.Shared
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">BlazorShop</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -18,8 +21,8 @@
                 <span class="oi oi-briefcase" aria-hidden="true"></span> Shop
             </NavLink>
         </li>
-        @if (true)
-        { 
+        @if (Promenljiva)
+        {
         <li class="nav-item px-3" >
             <NavLink class="nav-link" href="dodajartikal" >
                 <span class="oi oi-plus" aria-hidden="true"></span> Dodaj artikal
@@ -36,11 +39,14 @@
                 <span class="oi oi-account-login" aria-hidden="true"></span> Log In/Registracija
             </NavLink>
         </li>
+        @if (Promenljiva || Promenljiva2)
+        {
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="logout">
                 <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
             </NavLink>
         </li>
+        }
     </ul>
 </div>
 
@@ -48,10 +54,20 @@
     private bool collapseNavMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
     public bool Promenljiva { get; set; } = false;
+    public bool Promenljiva2 { get; set; } = false;
+
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+
+        if(LS.ContainKey("CuvajJuzera"))
+        {
+            Promenljiva = LS.GetItem<User>("CuvajJuzera").Administrator;
+            Promenljiva2 = true;
+            StateHasChanged();
+        }
     }
 }

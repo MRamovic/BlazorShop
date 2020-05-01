@@ -12,7 +12,7 @@ namespace BlazorShop.Server.SignalR
     {
 		public async Task ProveriKorisnika(User LogIn)
 		{
-			EF.Baza DB = new EF.Baza();
+			Baza DB = new Baza();
 
 			var juzer = DB.Users.Where(us => us.Equals(LogIn)).FirstOrDefault();
 
@@ -24,7 +24,7 @@ namespace BlazorShop.Server.SignalR
 		}
 		public async Task PrihvatiKorisnika(User u)
 		{
-			EF.Baza DB = new EF.Baza();
+			Baza DB = new Baza();
 			DB.Add(u);
 			await DB.SaveChangesAsync();
 

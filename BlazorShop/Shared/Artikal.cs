@@ -26,7 +26,7 @@ namespace BlazorShop.Shared
         
         public override string ToString()
         {
-            return $"   { Naziv} ----  {Kolicina} - {Cena}  ";
+            return $"  {SKU} - { Naziv}  ----  {Kolicina} - {Cena}  ";
         }
     }
 }

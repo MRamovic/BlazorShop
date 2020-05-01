@@ -28,7 +28,7 @@ namespace BlazorShop.Server.SignalR
             Baza NB = new Baza();
             var lArt3 = NB.Artikals.Where(x => x.Naziv.Contains(r) || x.SKU.Contains(r)).ToList(); 
             await Clients.Caller.SendAsync("ArtikalMetoda", lArt3);
-          
+
         }
 
 

@@ -1,6 +1,13 @@
-﻿@page "/logout"
+﻿@inject Blazored.LocalStorage.ISyncLocalStorageService LS
+
+@page "/logout"
 <h3>Logout</h3>
 
 @code {
+    protected override async Task OnInitializedAsync()
+    {
+        LS.RemoveItem("CuvajJuzera");
 
+
+    }
 }

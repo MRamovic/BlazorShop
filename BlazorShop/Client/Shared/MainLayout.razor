@@ -58,14 +58,14 @@
     {
         MainServer.On<User>("EvoJuzera", us =>
         {
-           
-            
-                Juzer = us;
-                LogovaniKorisnik = true;
-                LS.SetItem("CuvajJuzera", Juzer);
-                
-                StateHasChanged();
-            
+
+
+            Juzer = us;
+            LogovaniKorisnik = true;
+            LS.SetItem("CuvajJuzera", Juzer);
+
+            StateHasChanged();
+
         });
         MainServer.SendAsync("ProveriKorisnika", Juzer);
     }

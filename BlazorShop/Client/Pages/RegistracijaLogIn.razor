@@ -4,7 +4,7 @@
 @inject NavigationManager NM
 @inject Blazored.LocalStorage.ISyncLocalStorageService LS
 
-<h3>RegistracijaLogIn</h3>
+<h3>Registracija / Log in</h3>
 
 @if (Juzer == null)
 {
@@ -19,12 +19,18 @@
     <button @onclick="Toggle">@txtDugme</button>
 }
 else
-    {
-    <h2>Prijavljen: @Juzer.Username</h2>
-    }
-<p>@NM</p>
-@code {
-    public HubConnection LoginRegServer;
+{
+    <h2>Informacije o korisniku:</h2>
+    <p>@Juzer.ImeKorisnika</p>
+    <p>@Juzer.PrezimeKorisnika</p>
+    <p>@Juzer.GradKorisnika</p>
+    <p>@Juzer.AdresaKorisnika</p>
+    <p>@Juzer.EmailKorisnika</p>
+    <p>@Juzer.KontaktKorisnika</p>
+
+}
+    @code {
+public HubConnection LoginRegServer;
     public User Juzer { get; set; }
     public string txtDugme { get; set; } = "Registruj se!";
 
@@ -64,7 +70,7 @@ else
 
         Juzer = nesto;
         LS.SetItem("CuvajJuzera", Juzer);
-        
+
         StateHasChanged();
     }
-}
+    }

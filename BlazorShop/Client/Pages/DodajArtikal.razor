@@ -3,6 +3,10 @@
 @inject NavigationManager NM
 @using Microsoft.AspNetCore.SignalR.Client
 
+    <div>
+        <input type="search" placeholder="Search..." @bind-value="Pretrazi" />
+        <button type="submit" class="btn btn-primary" @onclick="(() => PretraziArtikal(Pretrazi))"><i class="oi oi-magnifying-glass"></i></button>
+    </div>
 
 <h3>Dodaj artikal</h3>
 
@@ -37,7 +41,7 @@
     <ul>
         @foreach (Artikal a in lArt)
         {
-            <li>@a</li>
+        <li><button @onclick="()=>PopuniPolja(a)">@a</button></li>
         }
     </ul>
 }
@@ -53,6 +57,8 @@
 
     public Artikal art = new Artikal();
     public List<Artikal> lArt = new List<Artikal>();
+    public string Rec { get; set; }
+    public string Pretrazi { get; set; }
 
     public HubConnection  DodajArtikalServer;
 
@@ -77,8 +83,17 @@
 
     public void NapraviArtikal()
     {
+        for (int i = 0; i < lArt.Count; i++)
+        {
+            if (lArt[i].SKU ==art.SKU)
+            {
+                lArt[i].Kolicina += art.Kolicina;
+            }else
+            {
+                lArt.Add(new Artikal(art.SKU, art.Naziv, art.Kolicina, art.Cena));
+            }
+        }
 
-        lArt.Add(new Artikal(art.SKU, art.Naziv, art.Kolicina, art.Cena));
         art = new Artikal();
 
     }
@@ -109,6 +124,19 @@
         art2.Add(new Artikal("SKU1113", "sprite", 30, 50));
         art2.Add(new Artikal("SKU1114", "bitter lemon", 40, 35));
         DodajArtikalServer.SendAsync("PrihvatiArtikal", art2);
+    }
+
+    public void PretraziArtikal(string a)
+    {
+        Rec = a;
+        DodajArtikalServer.SendAsync("PretragaArtikla", Rec);
+    }
+    public void PopuniPolja(Artikal ar)
+    {
+        art.SKU = ar.SKU;
+        art.Naziv = ar.Naziv;
+        ar.Kolicina = 0;
+        art.Cena = ar.Cena;
     }
 }
 

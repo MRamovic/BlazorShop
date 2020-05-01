@@ -83,7 +83,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        LS.RemoveItem("OstaliArtikli");
+        //LS.RemoveItem("OstaliArtikli");
+        //LS.RemoveItem("PreostaliArtikli");
+        //LS.RemoveItem("CuvajKorpu");
         ShopServer = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("/habshop")).Build();
         await ShopServer.StartAsync();
 
@@ -95,7 +97,7 @@
             StateHasChanged();
         });
 
-        
+
 
 
         if (LS.ContainKey("CuvajKorpu"))
